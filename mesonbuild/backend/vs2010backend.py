@@ -769,6 +769,11 @@ class Vs2010Backend(backends.Backend):
         # Prefix to use to access the source tree's subdir from the vcxproj dir
         proj_to_src_dir = os.path.join(proj_to_src_root, self.get_target_dir(target))
         (sources, headers, objects, languages) = self.split_sources(target.sources)
+        # Be sure to have no duplicated items. MSBuild handles duplicated items very well,
+        # instead the VS IDE complains and refuses to load the project files in this case
+        sources = set(sources)
+        headers = set(headers)
+        objects = set(objects)
         if self.is_unity(target):
             sources = self.generate_unity_files(target, sources)
         compiler = self._get_cl_compiler(target)
@@ -863,6 +868,9 @@ class Vs2010Backend(backends.Backend):
         gen_src += custom_src
         gen_hdrs += custom_hdrs
         gen_langs += custom_langs
+        # Be sure to have no duplicated items.
+        gen_src = set(gen_src)
+        gen_hdrs = set(gen_hdrs)
         # Project information
         direlem = ET.SubElement(root, 'PropertyGroup')
         fver = ET.SubElement(direlem, '_ProjectFileVersion')
