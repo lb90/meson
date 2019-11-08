@@ -994,7 +994,7 @@ class Environment:
                 if match:
                     target = match.group(1)
                 else:
-                    target = 'x86'
+                    raise EnvironmentException("Unable to detect MSVC compiler target architecture")
                 linker = MSVCDynamicLinker(for_machine, version=version)
                 cls = VisualStudioCCompiler if lang == 'c' else VisualStudioCPPCompiler
                 return cls(
