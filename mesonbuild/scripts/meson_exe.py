@@ -75,7 +75,12 @@ def run_exe(exe: ExecutableSerialisation, extra_env: T.Optional[T.Dict[str, str]
             print('--- stdout ---')
             print(stdout.decode(encoding=encoding, errors='replace'))
         print('--- stderr ---')
-        print(stderr.decode(encoding=encoding, errors='replace'))
+        s = stderr.decode(encoding=encoding, errors='replace')
+        #s = s.replace("\n", "").replace("\r", "")
+        #s = s.replace("\r", "")
+        sys.stdout.flush()
+        sys.stdout.buffer.write(s.encode(encoding))
+        sys.stdout.buffer.flush()
         return p.returncode
 
     if exe.capture:
